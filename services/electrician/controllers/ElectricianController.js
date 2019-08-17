@@ -30,8 +30,10 @@ electricianController.show = function(req, res) {
     electrician.save(function(err) {
       if(err) {
         console.log(err);
+        res.json(err);
       } else {
         console.log("Successfully created an electrician."); 
+         res.json("Success!");
       }
     });
   };

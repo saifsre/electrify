@@ -9,7 +9,6 @@ router.get('/', function(req, res) {
 })
 
 // Get single electrician by id
-
 router.get('/show/:id', function(req, res) {
     electrician.show(req, res);
 });

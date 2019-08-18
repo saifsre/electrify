@@ -3,7 +3,7 @@ var Address = require('../models/electrician');
 
 var address = {};
 
-address.insert = function () {
+address.insert = function (req, res) {
     var address = new Address(req.body);
     Address.save(function(err) {
       if(err) {
@@ -15,3 +15,15 @@ address.insert = function () {
       }
     });
 }
+
+address.list = function (req, res) {
+    Address.find({}).exec(((err, address)=> {
+        if(err) {
+        }
+        else {
+            res.json(address);
+        }
+    }))
+}
+
+module.exports = address;

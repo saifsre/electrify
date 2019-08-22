@@ -31,12 +31,14 @@ io.on('connection', (socket) => {
   io.clients((error, clients) => {
     if (error) throw error;
     console.log('Connected!')
-    console.log(clients); 
   });
 
-  socket.on('position', (position) => { 
-    console.log(position)
-    socket.broadcast.emit('otherPositions', position);
+  socket.on('elecPosition', (position) => { 
+    socket.broadcast.emit('otherElecPositions', position);
+  })
+
+  socket.on('userPosition', (position) => { 
+    socket.broadcast.emit('otherUserPositions', position);
   })
 
   socket.on('disconnect', () => { 

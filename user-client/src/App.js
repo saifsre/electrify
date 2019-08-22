@@ -4,23 +4,35 @@ import {
   Hero, CallToAction, ScrollDownIndicator
 } from 'react-landing-page'
 import ElecModal from './stateless/electricians_modal';
+import * as UserService from './services/UserServices';
+const ctastyle = {
+  margin:  '30px',
+  backgroundColor: "orange"
 
+}
 class App extends Component {
-
   constructor(props) {
     super(props);
     this.state = {
       landingPage : true,
-      searchBox : false
-    }
+      searchBox : false,
+      loading: false,
+      user: null
+    };
   }
-  closeModal = () => {
+  componentDidMount() {
+    UserService.getUserLocation().then((position)=>{
+      this.setState({user:position});
+     }).catch((err)=>{console.log(err)});}
+   closeModal = () => {
     this.setState({searchBox: false, landingPage: true})
-    console.log('called!')
   }
   handleClick = () => {
     this.setState({searchBox: true}, ()=> {
-      console.log(this.state);
+      UserService.getElectriciansNearby(this.state.user).then((data)=>{}).catch((err)=>{
+        console.log(err);
+      });
+     // this.getElectriciansNearby(this.state.user);
     })
   }
   render() {
@@ -34,7 +46,7 @@ class App extends Component {
     >
         <Heading>Welcome to Electrify</Heading>
         <Subhead>Find your electrician</Subhead>
-        <CallToAction onClick= {this.handleClick}>Search</CallToAction>
+        <CallToAction onClick= {this.handleClick} style = {ctastyle}>Search</CallToAction>
         <ScrollDownIndicator/>
     </Hero>
   </Provider> 

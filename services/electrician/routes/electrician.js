@@ -20,8 +20,8 @@ router.post('/save', function(req, res) {
 })
 
 router.post('/find', function(req, res){
-    console.log(electrician);
     electrician.find(req, res);
 })
+
 
 module.exports = router;

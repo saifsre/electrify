@@ -1,6 +1,6 @@
 var mongoose = require('mongoose');
 var Electrician = require('../models/electrician');
-
+var io = require('socket.io-client');
 var electricianController = {};
 
 //list all the electricians
@@ -68,7 +68,7 @@ electricianController.show = function(req, res) {
 
   //Find registered electricians from the given lat lon range;
   electricianController.find = function(req, res) {
-     res.json("Found!");
+     
   }
 
   module.exports = electricianController;

@@ -19,14 +19,13 @@ class App extends Component {
     console.log('called!')
   }
   handleClick = () => {
-    this.setState({searchBox: true, landingPage: false }, ()=> {
+    this.setState({searchBox: true}, ()=> {
       console.log(this.state);
     })
   }
   render() {
   return (
     <div className="App"> 
-   <div hidden = {!this.state.landingPage}>
     <Provider>
     <Hero
       color="black"
@@ -39,7 +38,6 @@ class App extends Component {
         <ScrollDownIndicator/>
     </Hero>
   </Provider> 
-  </div> 
   <ElecModal show = {this.state.searchBox} closeModal = {this.closeModal}/>
     </div>
   );

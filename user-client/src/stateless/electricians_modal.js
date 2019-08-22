@@ -8,7 +8,7 @@ function ElecModal (props) {
     <div>
     <Modal show = {props.show}>
     <Modal.Header closeButton>
-      <Modal.Title>Modal heading</Modal.Title>
+      <Modal.Title>Find Electrician</Modal.Title>
     </Modal.Header>
     <Modal.Body>Woohoo, you're reading this text in a modal!</Modal.Body>
     <Modal.Footer>

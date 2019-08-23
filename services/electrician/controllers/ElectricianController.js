@@ -1,7 +1,22 @@
 var mongoose = require('mongoose');
 var Electrician = require('../models/electrician');
 var io = require('socket.io-client');
+var GeoPoint = require('geopoint');
 var electricianController = {};
+
+var locationHistory = []
+
+var socket =  io.connect('http://localhost:5000');
+
+socket.on('connect', function onConnect(){
+  console.log('This socket is now connected to the location server.');
+});
+
+ socket.on('otherElecPositions', positionsData => {
+   console.log("Electricians Detected!")
+   locationHistory.push(positionsData);
+});
+
 
 //list all the electricians
 
@@ -67,8 +82,29 @@ electricianController.show = function(req, res) {
   };
 
   //Find registered electricians from the given lat lon range;
-  electricianController.find = function(req, res) {
-     
-  }
+  electricianController.find =  function(req, res) {
+     var userLocation = req.body;
+     var response = [];
+     var point1 = new GeoPoint(userLocation.coords.latitude, userLocation.coords.longitude);
+     for(var i = 0; i < locationHistory.length; i++) {
+      var loc = JSON.parse(locationHistory[i]);
 
+      var lat = loc.coords.latitude;
+      var lon = loc.coords.longitude;
+
+      var point2 = new GeoPoint(lat, lon);
+      var distance = point1.distanceTo(point2, true);
+      if (isNaN(distance)) {
+       distance = 0;
+      }
+      var obj = {
+        name: "test",
+        location:"test",
+        distance: distance,
+        description:"test"
+      }
+      response.push(obj);
+     }
+    res.json(response);
+  }
   module.exports = electricianController;

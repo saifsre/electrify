@@ -34,7 +34,8 @@ io.on('connection', (socket) => {
   });
 
   socket.on('elecPosition', (position) => { 
-    socket.broadcast.emit('otherElecPositions', position);
+    console.log(position);
+    socket.emit('otherElecPositions', position);
   })
 
   socket.on('userPosition', (position) => { 

@@ -5,6 +5,7 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var mongoose = require('mongoose');
 var bodyParser = require('body-parser');
+var cors = require('cors') 
 
 mongoose.connect('mongodb://localhost/electrician', { useNewUrlParser: true })
 .then(() => {console.log('Mongo db is connected!')})
@@ -14,6 +15,7 @@ mongoose.connect('mongodb://localhost/electrician', { useNewUrlParser: true })
 var electricianRouter = require('./routes/electrician'); 
 
 var app = express();
+app.use(cors());
 
  // parse application/json
  app.use(bodyParser.json());                        

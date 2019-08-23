@@ -17,22 +17,27 @@ class App extends Component {
       landingPage : true,
       searchBox : false,
       loading: false,
-      user: null
+      user: null,
+      elecs: null
     };
   }
-  componentDidMount() {
-    UserService.getUserLocation().then((position)=>{
-      this.setState({user:position});
+  async componentDidMount() {
+    await UserService.getUserLocation().then(async(position)=>{
+      await this.setState({user:position});
      }).catch((err)=>{console.log(err)});}
    closeModal = () => {
     this.setState({searchBox: false, landingPage: true})
   }
   handleClick = () => {
-    this.setState({searchBox: true}, ()=> {
-      UserService.getElectriciansNearby(this.state.user).then((data)=>{}).catch((err)=>{
+    this.setState({searchBox: true}, async ()=> {
+      await UserService.getElectriciansNearby(this.state.user).then((data)=>{
+       this.setState({elecs: data.data}, ()=>{
+      //   console.log(this.state.elecs);
+       })
+      })
+      .catch((err)=>{
         console.log(err);
       });
-     // this.getElectriciansNearby(this.state.user);
     })
   }
   render() {

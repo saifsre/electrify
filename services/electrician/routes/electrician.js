@@ -15,12 +15,11 @@ router.get('/show/:id', function(req, res) {
 
 //Save electrician
 router.post('/save', function(req, res) {
-    //console.log(req.body);
     electrician.save(req, res);
 })
 
 router.post('/find', function(req, res){
-    electrician.find(req, res);
+      electrician.find(req, res);
 })
 
 

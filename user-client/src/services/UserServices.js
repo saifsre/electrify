@@ -1,20 +1,12 @@
 import axios from 'axios';
+var uuid = require('uuid');
 
-function generateid() {
-    var text = '';
-    var possible =
-    'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-    for (var i = 0; i < 5; i++)
-      text += possible.charAt(Math.floor(Math.random() * possible.length));
-
-    return text;
-  }
 export var getUserLocation = function() {
     return new Promise((resolve, reject)=> {
         navigator.geolocation.getCurrentPosition(
             position=>{
               const payload = {
-                id: generateid(),
+                id: uuid.v1(),
                 coords: {
                   accuracy: position.coords.accuracy,
                   altitude: position.coords.altitude,
@@ -35,9 +27,14 @@ export var getUserLocation = function() {
 }
 
 export var getElectriciansNearby = function(user) {
-        console.log(user);
         return new Promise((resolve, reject) => {
-                axios.post('', user).then((response)=> {
+                axios('http://localhost:4000/electrician/find',{
+                  method: 'POST',
+                  headers: {
+                    'content-type': 'application/json'
+                  },
+                  data: user
+                }).then((response)=> {
                         resolve(response);
                 })
                 .catch((err) => {

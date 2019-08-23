@@ -67,7 +67,7 @@ function ElecModal (props) {
     <Modal.Header style = {modalStyle}>
       <Modal.Title style = {modalTitleStyle}>Electricians Nearby</Modal.Title>
     </Modal.Header>
-    <Modal.Body> <ElectList items = {elecs}/> </Modal.Body>
+    <Modal.Body> <ElectList items = {props.elecs}/> </Modal.Body>
     <Modal.Footer>
       <Button style = {buttonStyle} onClick = {props.closeModal}>
         Close

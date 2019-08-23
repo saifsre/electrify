@@ -30,16 +30,15 @@ server.listen(port);
 io.on('connection', (socket) => {
   io.clients((error, clients) => {
     if (error) throw error;
-    console.log('Connected!')
+    console.log('Serving: ', clients)
   });
-
-  socket.on('elecPosition', (position) => { 
-    console.log(position);
-    socket.emit('otherElecPositions', position);
+  socket.on('elecPosition', (position) => {
+    console.log("Electrician Found!");
+    io.sockets.emit('otherElecPositions', position);
   })
 
   socket.on('userPosition', (position) => { 
-    socket.broadcast.emit('otherUserPositions', position);
+    io.sockets.broadcast.emit('otherUserPositions', position);
   })
 
   socket.on('disconnect', () => { 

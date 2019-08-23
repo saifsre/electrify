@@ -6,14 +6,14 @@ var electricianController = {};
 
 var locationHistory = []
 
-var socket =  io.connect('http://localhost:5000');
+var socket =  io.connect('http://localhost:5000', {reconnect: true});
 
 socket.on('connect', function onConnect(){
   console.log('This socket is now connected to the location server.');
 });
 
  socket.on('otherElecPositions', positionsData => {
-   console.log("Electricians Detected!")
+   console.log("Electricians Detected!");
    locationHistory.push(positionsData);
 });
 
@@ -81,7 +81,7 @@ electricianController.show = function(req, res) {
     });
   };
 
-  //Find registered electricians from the given lat lon range;
+  // Given user lat lon, find the nearest electrician available within 10km radius
   electricianController.find =  function(req, res) {
      var userLocation = req.body;
      var response = [];
@@ -97,14 +97,18 @@ electricianController.show = function(req, res) {
       if (isNaN(distance)) {
        distance = 0;
       }
+      if(distance < 10) {
       var obj = {
-        name: "test",
-        location:"test",
+        name: "Saif Khan",
+        location:"Vancouver",
         distance: distance,
-        description:"test"
+        description:"5 star rated electrician"
       }
       response.push(obj);
-     }
+    }
+    }
+    console.log(response);
+    console.log(locationHistory)
     res.json(response);
   }
   module.exports = electricianController;

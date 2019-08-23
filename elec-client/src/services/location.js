@@ -15,7 +15,7 @@
                   speed: position.coords.speed
                 },
                 timestamp: position.timestamp
-              }
+              } 
             socket.emit('elecPosition', JSON.stringify(payload));  
             let tempPosition = { ...myPosition };
             tempPosition.latitude = position.coords.latitude;

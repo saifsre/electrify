@@ -2,6 +2,7 @@ var mongoose = require('mongoose');
 var Electrician = require('../models/electrician');
 var io = require('socket.io-client');
 var GeoPoint = require('geopoint');
+var address = require('./AddressController');
 var electricianController = {};
 
 var locationHistory = []
@@ -44,16 +45,22 @@ electricianController.show = function(req, res) {
     });
   };
 
+
   //create and save an electrician
-  electricianController.save = function(req, res) {
-    var electrician = new Electrician(req.body);
-    electrician.save(function(err) {
+  electricianController.save = async function(req, res) {
+    var adId = await address.save(req, res);
+    var elec = req.body.electrician;
+    elec.address = adId;
+    console.log(elec);
+    var electrician = new Electrician(elec);
+
+    electrician.save(function(err, elec) {
       if(err) {
         console.log(err);
-        res.json(err);
+        res.json(err,404);
       } else {
         console.log("Successfully created an electrician."); 
-         res.json("Success!");
+         res.json("Success!" + elec.id);
       }
     });
   };
@@ -69,7 +76,7 @@ electricianController.show = function(req, res) {
       }
     });
   };
-// Delete an electrician
+  // Delete an electrician
   electricianController.delete = function(req, res) {
     Electrician.remove({_id: req.params.id}, function(err) {
       if(err) {

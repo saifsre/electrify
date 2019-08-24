@@ -9,5 +9,7 @@ router.get('/', (req, res)=> {
 });
 
 router.post('/', (req, res) => {
-    address.insert(req, res);
+    //address.insert(req, res);
 })
+
+module.exports = router;

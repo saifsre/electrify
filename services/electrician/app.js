@@ -13,7 +13,7 @@ mongoose.connect('mongodb://localhost/electrician', { useNewUrlParser: true })
 
 
 var electricianRouter = require('./routes/electrician'); 
-
+var addressRouter = require("./routes/address");
 var app = express();
 app.use(cors());
 
@@ -24,6 +24,8 @@ app.use(cors());
  app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use('/electrician', electricianRouter);
+app.use('/address', addressRouter);
+
 
 
 // catch 404 and forward to error handler

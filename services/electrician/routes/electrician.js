@@ -15,6 +15,7 @@ router.get('/show/:id', function(req, res) {
 
 //Save electrician
 router.post('/save', function(req, res) {
+    console.log("Received request for creating electrician!") 
     electrician.save(req, res);
 })
 

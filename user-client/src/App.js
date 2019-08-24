@@ -53,7 +53,6 @@ class App extends Component {
       await UserService.getElectriciansNearby(this.state.user).then((data)=>{
        this.setState({elecs: data.data}, ()=>{
          this.setState({searchBox: true}, ()=> {
-           console.log("Opened. ");
            console.log(this.state);
          })
        })
@@ -61,7 +60,6 @@ class App extends Component {
       .catch((err)=>{
         alert(err)
       }).finally((err)=> {
-        
         this.setState({loading:false})
       });
     })

@@ -4,9 +4,9 @@ var AddressSchema = new mongoose.Schema(
     {
         address1: String,
         address2: String,
-        postalCode: String,
+        zip: String,
         city: String,
-        country: String
+        state: String
     }
 );
 

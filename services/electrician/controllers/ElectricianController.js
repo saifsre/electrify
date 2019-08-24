@@ -118,4 +118,9 @@ electricianController.show = function(req, res) {
     console.log(locationHistory)
     res.json(response);
   }
+
+  electricianController.findUserByEmailandPassword = function(req, res) {
+    res.json("Checked In!");
+
+  }
   module.exports = electricianController;

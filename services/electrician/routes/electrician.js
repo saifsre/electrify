@@ -23,5 +23,9 @@ router.post('/find', function(req, res){
       electrician.find(req, res);
 })
 
+router.post('/signin', function(req, res){
+    electrician.findUserByEmailandPassword(req,res);
+})
+
 
 module.exports = router;

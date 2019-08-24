@@ -11,6 +11,7 @@ import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import InputGroup from 'react-bootstrap/InputGroup';
 import FormControl from 'react-bootstrap/FormControl';
+import Spinner from 'react-bootstrap/Spinner'
 
 import Col from 'react-bootstrap/Col';
 import Modal from 'react-bootstrap/Modal';
@@ -23,7 +24,17 @@ const headingStyle = {
 const Login = (props)=> {
 
 }
-
+const spinnerStyle = {
+  width: '100px',
+	height: '100px',	
+	position: 'absolute',
+	top:0,
+	bottom: 0,
+	left: 0,
+	right: 0,
+  	
+	margin: 'auto',
+}
 const SignUpForm = (props) => {
   return (
   <>
@@ -120,7 +131,7 @@ class App extends Component {
     super(props);
     this.id = this.generateid();
     this.state = {
-      isLoading: true,
+      isLoading: false,
       myPosition: {
         latitude: 0,
         longitude: 0,
@@ -129,7 +140,9 @@ class App extends Component {
       users: {},
       registerForm: false,
       loginForm: false,
-      formInputs: {name: "", email: "", password: "", address1: "", address2: "", city: "", state: "", zip: ""}
+      formInputs: {name: "", email: "", password: "", address1: "", address2: "", city: "", state: "", zip: ""},
+      signIninputs:{emailSignIn:"",passwordSignIn:""
+    }
     };
    // this.socket = io.connect('http://localhost:5000');
   }
@@ -198,11 +211,39 @@ class App extends Component {
       break;
       case "zip": this.state.formInputs.zip = value;
       break;
+      case "emailSignIn": this.state.signIninputs.emailSignIn = value;
+      break;
+      case "passwordSignIn": this.state.signIninputs.passwordSignIn = value;
     }
     console.log(this.state.formInputs);
   }
-    handleSignUp = () => {
+   
+  handleSignUp = () => {
     this.setState({registerForm: true})
+  }
+  handleSignIn = () => {
+    this.setState({isLoading: true}, ()=> {
+      var creds = {
+        email: this.state.signIninputs.emailSignIn,
+        password: this.state.signIninputs.passwordSignIn
+      }
+      axios('http://localhost:4000/electrician/signin',{
+        method: 'POST',
+        headers: {
+          'content-type': 'application/json'
+        },
+        data: creds
+      }).then((response)=> {
+        alert(response.data);
+        console.log(response);
+      })
+      .catch((err) => {
+        alert("Oops, something went wrong");
+        console.log(err);
+      }).finally(()=>{
+        this.setState({isLoading:false})
+      })
+    })       
   }
   closeSignUp = () => {
     this.setState({registerForm: false})
@@ -212,29 +253,47 @@ class App extends Component {
   }
   render() {
   //elecServices.getUserLocation(this);
+  var component = null;
+  if(this.state.isLoading) {
+    component = 
+    <div style= {spinnerStyle}>
+    <Spinner animation="border" role="status">
+    <span className="sr-only">Loading...</span>
+    </Spinner>
+    </div>
+  }else {
+    component = 
+    <div className="App">
+    <Hero
+  color='white'
+  backgroundImage='https://source.unsplash.com/Vwf8q3RzBRE/1600x900'
+  bg='black'
+  bgOpacity={0.5}
+>
+   <Heading style = {headingStyle}>Electricians Portal</Heading>
+    <Flex mt={4}>
+    <div>
+    <InputGroup size="lg" >
+    <InputGroup.Prepend>
+    </InputGroup.Prepend>
+    <FormControl placeholder="Email"
+     aria-label="Large" aria-describedby="inputGroup-sizing-sm" 
+     onChange = {e => this.handleInputs(e.target.value, "emailSignIn")}/>
+    <FormControl placeholder="Password"
+     aria-label="Large" aria-describedby="inputGroup-sizing-sm" 
+     onChange = {e => this.handleInputs(e.target.value, "passwordSignIn")}/>
+    </InputGroup>
+    </div>
+      <CallToAction style = {ctaStyle} bg='blue' mr={4} onClick = {this.handleSignIn}>Check in </CallToAction>
+      <CallToAction style = {ctaStyle} onClick = {this.handleSignUp}>Register</CallToAction>
+  </Flex>
+  <SignUp closeSignUp = {this.closeSignUp} show={this.state.registerForm} handleInputs = {this.handleInputs} handleSubmit = {this.handleSubmit}/>
+  </Hero>
+  </div>
+  }
   return (
     <div className="App">
-      <Hero
-    color='white'
-    backgroundImage='https://source.unsplash.com/Vwf8q3RzBRE/1600x900'
-    bg='black'
-    bgOpacity={0.5}
-  >
-     <Heading style = {headingStyle}>Electricians Portal</Heading>
-      <Flex mt={4}>
-      <div>
-      <InputGroup size="lg" >
-      <InputGroup.Prepend>
-      </InputGroup.Prepend>
-      <FormControl placeholder="Enter your E-ID"
-       aria-label="Large" aria-describedby="inputGroup-sizing-sm" />
-      </InputGroup>
-      </div>
-        <CallToAction style = {ctaStyle} bg='blue' mr={4}>Check in </CallToAction>
-        <CallToAction style = {ctaStyle} onClick = {this.handleSignUp}>Register</CallToAction>
-    </Flex>
-    <SignUp closeSignUp = {this.closeSignUp} show={this.state.registerForm} handleInputs = {this.handleInputs} handleSubmit = {this.handleSubmit}/>
-    </Hero>
+     {component}
     </div>
   );
 }

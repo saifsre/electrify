@@ -58,7 +58,7 @@ const SignUpForm = (props) => {
   
     <Form.Group controlId="formGridAddress1">
       <Form.Label>Address</Form.Label>
-      <Form.Control placeholder="1234 Main St" onChange = {e => props.handleInputs(e.target.value,"address2")}/>
+      <Form.Control placeholder="1234 Main St" onChange = {e => props.handleInputs(e.target.value,"address1")}/>
     </Form.Group>
   
     <Form.Group controlId="formGridAddress2">
@@ -141,15 +141,16 @@ class App extends Component {
       registerForm: false,
       loginForm: false,
       formInputs: {name: "", email: "", password: "", address1: "", address2: "", city: "", state: "", zip: ""},
-      signIninputs:{emailSignIn:"",passwordSignIn:""
+      signIninputs:{emailSignIn:"",passwordSignIn:"",
+      isLoggedIn: false
     }
     };
-   // this.socket = io.connect('http://localhost:5000');
+    this.socket = io.connect('http://localhost:5000');
   }
 
   handleSubmit = () => {
     if(this.state.formInputs.name == "" || this.state.formInputs.email == "" ||
-    this.state.formInputs.password == "" || this.state.formInputs.adddress1 == "" ||
+    this.state.formInputs.password == "" || this.state.formInputs.address1 == "" ||
     this.state.formInputs.address2 == "" || this.state.formInputs.city == "" ||
     this.state.formInputs.state == "" || this.state.formInputs.zip == "") {
       alert("Please completely fill up the form!")
@@ -159,7 +160,8 @@ class App extends Component {
         const payload = {
           electrician: {
             name: this.state.formInputs.name,
-            password: this.state.formInputs.password
+            password: this.state.formInputs.password,
+            email: this.state.formInputs.email
           },
           address: {
             address1: this.state.formInputs.address1,
@@ -182,10 +184,9 @@ class App extends Component {
           console.log(response);
         })
         .catch((err) => {
-          alert("Oops, something went wrong");
-          console.log(err);
+          alert(err.message);
         }).finally(()=>{
-          this.setState({isLoading:false})
+          this.setState({isLoading:false, formInputs: {name: "", email: "", password: "", address1: "", address2: "", city: "", state: "", zip: ""}})
         })
       })
 
@@ -215,8 +216,7 @@ class App extends Component {
       break;
       case "passwordSignIn": this.state.signIninputs.passwordSignIn = value;
     }
-    console.log(this.state.formInputs);
-  }
+    }
    
   handleSignUp = () => {
     this.setState({registerForm: true})
@@ -233,12 +233,14 @@ class App extends Component {
           'content-type': 'application/json'
         },
         data: creds
-      }).then((response)=> {
-        alert(response.data);
-        console.log(response);
+      }).then(async(response)=> {
+        alert("Successfully logged in!");
+        await this.emitLocation();
+        this.setState({isLoggedIn: true}, async ()=>{
+        });
       })
       .catch((err) => {
-        alert("Oops, something went wrong");
+        alert("Invalid login");
         console.log(err);
       }).finally(()=>{
         this.setState({isLoading:false})
@@ -248,8 +250,11 @@ class App extends Component {
   closeSignUp = () => {
     this.setState({registerForm: false})
   }
+  emitLocation = async () => {
+    await elecServices.emitLocation(this.socket,this.state.myPosition,this);
+  }
   componentDidMount() {
-  //  elecServices.emitLocation(this.socket,this.state.myPosition,this);
+    //elecServices.emitLocation(this.socket,this.state.myPosition,this);
   }
   render() {
   //elecServices.getUserLocation(this);

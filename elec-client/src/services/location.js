@@ -1,33 +1,39 @@
+import { rejects } from "assert";
 
     var elecServices = function() {
     this.emitLocation = function(socket, myPosition, state) {
+      return new Promise((resolve, reject)=> {
         navigator.geolocation.getCurrentPosition(
-            position=>{
-              const payload = {
-                id: state.id,
-                coords: {
-                  accuracy: position.coords.accuracy,
-                  altitude: position.coords.altitude,
-                  altitudeAccuracy: position.coords.altitudeAccuracy,
-                  heading: position.coords.heading,
-                  latitude: position.coords.latitude,
-                  longitude: position.coords.longitude,
-                  speed: position.coords.speed
-                },
-                timestamp: position.timestamp
-              } 
-            socket.emit('elecPosition', JSON.stringify(payload));  
-            let tempPosition = { ...myPosition };
-            tempPosition.latitude = position.coords.latitude;
-            tempPosition.longitude = position.coords.longitude;
-            state.setState({
-              myPosition: tempPosition,
-              isLoading: false,
-            });
-          },
-          error => console.log(error),
-          { enableHighAccuracy: true, timeout: 20000, distanceFilter: 10 }
-          );
+          position=>{
+            const payload = {
+              id: state.id,
+              coords: {
+                accuracy: position.coords.accuracy,
+                altitude: position.coords.altitude,
+                altitudeAccuracy: position.coords.altitudeAccuracy,
+                heading: position.coords.heading,
+                latitude: position.coords.latitude,
+                longitude: position.coords.longitude,
+                speed: position.coords.speed
+              },
+              timestamp: position.timestamp
+            } 
+            console.log(payload);
+          socket.emit('elecPosition', JSON.stringify(payload)); 
+          let tempPosition = { ...myPosition };
+          tempPosition.latitude = position.coords.latitude;
+          tempPosition.longitude = position.coords.longitude;
+          state.setState({
+            myPosition: tempPosition,
+            isLoading: false,
+          });
+          console.log(state.state);
+          resolve("Success");
+        },
+        error => reject(error),
+        { enableHighAccuracy: true, timeout: 20000, distanceFilter: 10 }
+        );
+      })
     }
     this.getUserLocation = function(t) {
         t.socket.on('otherUserPositions', (positionsData)=> {

@@ -57,7 +57,7 @@ electricianController.show = function(req, res) {
     electrician.save(function(err, elec) {
       if(err) {
         console.log(err);
-        res.json(err,404);
+        res.json("User already exists",404);
       } else {
         console.log("Successfully created an electrician."); 
          res.json("Success!" + elec.id);
@@ -120,7 +120,21 @@ electricianController.show = function(req, res) {
   }
 
   electricianController.findUserByEmailandPassword = function(req, res) {
-    res.json("Checked In!");
-
+    console.log(req.body)
+    Electrician.findOne({email: req.body.email, password: req.body.password}).exec((err, elec)=> {
+      if(err) {
+         res.json(err, 404);
+      }
+      else {
+        console.log(elec);
+        if(elec) {
+        console.log("success")
+        res.json(elec, 200);
+        }
+        else {
+          res.json("Invalid Login", 404);
+        }
+      }
+    })
   }
   module.exports = electricianController;

@@ -34,6 +34,7 @@ io.on('connection', (socket) => {
   });
   socket.on('elecPosition', (position) => {
     console.log("Electrician Found!");
+    console.log(JSON.parse(position));
     io.sockets.emit('otherElecPositions', position);
   })
 

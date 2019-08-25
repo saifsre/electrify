@@ -3,6 +3,7 @@ import { rejects } from "assert";
     var elecServices = function() {
     this.emitLocation = function(socket, myPosition, state) {
       return new Promise((resolve, reject)=> {
+        var elec = state.state.electrician;
         navigator.geolocation.getCurrentPosition(
           position=>{
             const payload = {
@@ -16,9 +17,9 @@ import { rejects } from "assert";
                 longitude: position.coords.longitude,
                 speed: position.coords.speed
               },
-              timestamp: position.timestamp
+              timestamp: position.timestamp,
+              electrician: elec
             } 
-            console.log(payload);
           socket.emit('elecPosition', JSON.stringify(payload)); 
           let tempPosition = { ...myPosition };
           tempPosition.latitude = position.coords.latitude;
@@ -27,7 +28,6 @@ import { rejects } from "assert";
             myPosition: tempPosition,
             isLoading: false,
           });
-          console.log(state.state);
           resolve("Success");
         },
         error => reject(error),

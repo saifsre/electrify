@@ -16,6 +16,7 @@ import Spinner from 'react-bootstrap/Spinner'
 import Col from 'react-bootstrap/Col';
 import Modal from 'react-bootstrap/Modal';
 import axios from 'axios';
+import ElecMap from './components/map'
 const headingStyle = {
   color: "white",
   fontSize: "50px"
@@ -143,8 +144,10 @@ class App extends Component {
       formInputs: {name: "", email: "", password: "", address1: "", address2: "", city: "", state: "", zip: ""},
       signIninputs:{emailSignIn:"",passwordSignIn:"",
       isLoggedIn: false
+    },
+    interval: null,
+    electrician: {}
     }
-    };
     this.socket = io.connect('http://localhost:5000');
   }
 
@@ -234,10 +237,16 @@ class App extends Component {
         },
         data: creds
       }).then(async(response)=> {
-        alert("Successfully logged in!");
-        await this.emitLocation();
-        this.setState({isLoggedIn: true}, async ()=>{
-        });
+        await this.setState({electrician:response.data}, async()=>{
+          alert("Successfully logged in!");
+          await this.emitLocation();
+          this.setState({isLoggedIn: true}, async ()=>{
+            this.state.interval = setInterval(async()=>{
+              this.emitLocation();
+            },5000)
+          });
+        })
+
       })
       .catch((err) => {
         alert("Invalid login");
@@ -266,7 +275,7 @@ class App extends Component {
     <span className="sr-only">Loading...</span>
     </Spinner>
     </div>
-  }else {
+  }else if(!this.state.isLoading && !this.state.isLoggedIn){
     component = 
     <div className="App">
     <Hero
@@ -284,7 +293,7 @@ class App extends Component {
     <FormControl placeholder="Email"
      aria-label="Large" aria-describedby="inputGroup-sizing-sm" 
      onChange = {e => this.handleInputs(e.target.value, "emailSignIn")}/>
-    <FormControl placeholder="Password"
+    <FormControl type= "password" placeholder="Password"
      aria-label="Large" aria-describedby="inputGroup-sizing-sm" 
      onChange = {e => this.handleInputs(e.target.value, "passwordSignIn")}/>
     </InputGroup>
@@ -295,10 +304,12 @@ class App extends Component {
   <SignUp closeSignUp = {this.closeSignUp} show={this.state.registerForm} handleInputs = {this.handleInputs} handleSubmit = {this.handleSubmit}/>
   </Hero>
   </div>
+  } else if(this.state.isLoggedIn && !this.state.isLoading) {
+    component =  <ElecMap mypos={this.state.myPosition} me={this.state.electrician}/>
   }
   return (
     <div className="App">
-     {component}
+    {component}
     </div>
   );
 }

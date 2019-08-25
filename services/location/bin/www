@@ -7,6 +7,9 @@
 var app = require('../app');
 var debug = require('debug')('location:server');
 var http = require('http');
+const redis = require('redis'), client = redis.createClient();
+
+client.on('connect', ()=>console.log('Redis Connected!'));
 /**
  * Get port from environment and store in Express.
  */
@@ -32,10 +35,21 @@ io.on('connection', (socket) => {
     if (error) throw error;
     console.log('Serving: ', clients)
   });
-  socket.on('elecPosition', (position) => {
+  socket.on('elecPosition', (electrician) => {
     console.log("Electrician Found!");
-    console.log(JSON.parse(position));
-    io.sockets.emit('otherElecPositions', position);
+    let elec = JSON.parse(electrician);
+    client.get(elec.electrician._id,(error, result)=>{
+      if(error){
+        console.log("Something went wrong")
+      }
+      var res = JSON.parse(result);
+      console.log(res);
+      if(res == null) {
+        console.log("Caching it!")
+        client.set(elec.electrician._id, JSON.stringify(elec.coords));
+        io.sockets.emit('otherElecPositions', electrician);
+      }
+    })
   })
 
   socket.on('userPosition', (position) => { 

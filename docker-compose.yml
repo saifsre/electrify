@@ -1,0 +1,53 @@
+version: '3'
+services: 
+  location: 
+    build: ./services/location
+    volumes:
+      - ./services/location:/app
+    ports:
+      - 5000:5000
+    depends_on:
+      - mongo
+  electrician: 
+    build: ./services/electrician
+    volumes:
+      - ./services/electrician:/app
+    ports:
+      - 4000:4000
+    depends_on:
+      - location
+  order: 
+    build: ./services/order
+    volumes:
+      - ./services/order:/app
+    ports:
+      - 2000:2000
+    depends_on:
+      - electrician
+
+  userclient: 
+    build: ./user-client
+    volumes:
+      - ./user-client:/app
+    ports:
+      - 3000:3000
+    depends_on:
+      - electrician
+
+  electricianClient: 
+    build: ./elec-client
+    volumes:
+      - ./elec-client:/app
+    ports:
+      - 3001:3000
+    depends_on:
+      - electrician
+
+  mongo:
+    image: mongo
+    ports:
+      - 27017:27017
+
+  redis:
+    image: redis:latest
+    

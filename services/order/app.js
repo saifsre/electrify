@@ -8,7 +8,7 @@ var cors = require('cors')
 var orderRouter = require('./routes/order')
 var mongoose = require('mongoose');
 
-mongoose.connect('mongodb://localhost/order', { useNewUrlParser: true })
+mongoose.connect('mongodb://mongo/order', { useNewUrlParser: true })
 .then(() => {console.log('Mongo db is connected!')})
 .catch((err)=> {console.log(err)});
 

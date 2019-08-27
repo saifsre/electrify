@@ -34,7 +34,7 @@ services:
     depends_on:
       - electrician
 
-  electricianClient: 
+  electricianclient: 
     build: ./elec-client
     volumes:
       - ./elec-client:/app

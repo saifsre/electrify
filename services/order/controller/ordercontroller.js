@@ -1,6 +1,9 @@
 var io = require('socket.io-client');
-var socket =  io.connect('http://localhost:5000', {reconnect: true});
-
+var socket =  io.connect('http://location:5000', {reconnect: true});
+socket.on('connect', function onConnect(){
+    console.log('This Order Service is now connected to the location server.');
+  });
+  
 var order = {}
 
 

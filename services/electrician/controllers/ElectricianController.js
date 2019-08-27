@@ -4,22 +4,22 @@ var io = require('socket.io-client');
 var GeoPoint = require('geopoint');
 var address = require('./AddressController');
 
-const redis = require('redis'), client = redis.createClient();
+//const redis = require('redis'), client = redis.createClient();
 
-client.on('connect', ()=>console.log('Redis Connected!'));
+//client.on('connect', ()=>console.log('Redis Connected!'));
 
 var electricianController = {};
 
 var locationHistory = []
 
-var socket =  io.connect('http://localhost:5000', {reconnect: true});
-
+var socket =  io.connect('http://location:5000', {reconnect: true});
+//console.log('check 1', socket.connected);
 socket.on('connect', function onConnect(){
-  console.log('This socket is now connected to the location server.');
+  console.log('This Electrician Service is now connected to the location server.');
 });
 
  socket.on('otherElecPositions', positionsData => {
-   console.log("Electricians Detected!");
+   console.log("Electricians Detected!!!!!!!");
    duplicatesRemover(locationHistory, positionsData);
    console.log(locationHistory);
 

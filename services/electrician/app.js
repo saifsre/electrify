@@ -7,7 +7,7 @@ var mongoose = require('mongoose');
 var bodyParser = require('body-parser');
 var cors = require('cors') 
 
-mongoose.connect('mongodb://localhost/electrician', { useNewUrlParser: true })
+mongoose.connect('mongodb://mongo/electrician', { useNewUrlParser: true })
 .then(() => {console.log('Mongo db is connected!')})
 .catch((err)=> {console.log(err)});
 

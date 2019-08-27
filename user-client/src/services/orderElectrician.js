@@ -1,6 +1,26 @@
+import axios from 'axios';
 
-var orderElectrician = function(state) { 
-    consolelog('works');
+export var orderElectrician = function(id, user) { 
+
+    var order= {
+        elecId: id,
+        user: user
+    }
+    return new Promise((resolve, reject)=>{
+        axios('http://localhost:2000/order/',{
+            method: 'POST',
+            headers: {
+              'content-type': 'application/json'
+            },
+            data: order
+          }).then((response)=> {
+            console.log(response);
+                  resolve(response);
+          })
+          .catch((err) => {
+                  console.log(err);
+                  reject(err);
+          })
+  })
 }
-
-export default new orderElectrician;
+ 

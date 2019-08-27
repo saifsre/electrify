@@ -1,6 +1,4 @@
-import { rejects } from "assert";
-
-    var elecServices = function() {
+ var elecServices = function() {
     this.emitLocation = function(socket, myPosition, state) {
       return new Promise((resolve, reject)=> {
         var elec = state.state.electrician;

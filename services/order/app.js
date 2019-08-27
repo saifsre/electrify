@@ -3,12 +3,16 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
+var bodyParser = require('body-parser');
+var cors = require('cors') 
+var orderRouter = require('./routes/order')
+var mongoose = require('mongoose');
 
-var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
+mongoose.connect('mongodb://localhost/order', { useNewUrlParser: true })
+.then(() => {console.log('Mongo db is connected!')})
+.catch((err)=> {console.log(err)});
 
 var app = express();
-
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
@@ -18,9 +22,15 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(cors());
 
-app.use('/', indexRouter);
-app.use('/users', usersRouter);
+ // parse application/json
+ app.use(bodyParser.json());                        
+
+ // parse application/x-www-form-urlencoded
+ app.use(bodyParser.urlencoded({ extended: true }));
+
+app.use('/order', orderRouter)
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

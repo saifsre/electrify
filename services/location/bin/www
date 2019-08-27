@@ -35,28 +35,45 @@ io.on('connection', (socket) => {
     if (error) throw error;
     console.log('Serving: ', clients)
   });
+
+  
   socket.on('elecPosition', (electrician) => {
     console.log("Electrician Found!");
     let elec = JSON.parse(electrician);
-    client.get(elec.electrician._id,(error, result)=>{
-      if(error){
-        console.log("Something went wrong")
-      }
-      var res = JSON.parse(result);
-      console.log(res);
-      if(res == null) {
-        console.log("Caching it!")
-        client.set(elec.electrician._id, JSON.stringify(elec.coords));
-        io.sockets.emit('otherElecPositions', electrician);
-      }
-    })
+    client.set(elec.electrician._id, electrician, ()=>{
+      io.sockets.emit('otherElecPositions', electrician);
+    });
+    // client.get(elec.electrician._id,(error, result)=>{
+    //   if(error){
+    //     console.log("Something went wrong")
+    //   }
+    //   var res = JSON.parse(result);
+    //   if(res == null) {
+    //     console.log("Caching it!")
+    //     client.set(elec.electrician._id, JSON.stringify(elec.coords));
+    //     io.sockets.emit('otherElecPositions', electrician);
+    //   }
+    //   else if(res.latitude !== elec.coords.latitude && res.longitude !== elec.coords.longitude){
+    //     console.log("Updating cache!");
+    //     client.set(elec.electrician._id, JSON.stringify(elec.coords));
+    //     io.sockets.emit('otherElecPositions', electrician);
+    //   }
+    // })
+  });
+
+  socket.on('logoff', (id)=>{
+    console.log("Logging off");
   })
 
   socket.on('userPosition', (position) => { 
-    io.sockets.broadcast.emit('otherUserPositions', position);
+    console.log("UserPositionReceived!")
+    var parsed = JSON.parse(position);
+    console.log(parsed);
+    io.sockets.emit(parsed.elecId, position);
   })
 
-  socket.on('disconnect', () => { 
+  socket.on('disconnect', (client) => { 
+    console.log(client," Disconnected!")
   })
 
 });

@@ -138,7 +138,7 @@ class App extends Component {
         longitude: 0,
         timestamp: 0,
       },
-      users: {},
+      users: [],
       registerForm: false,
       loginForm: false,
       formInputs: {name: "", email: "", password: "", address1: "", address2: "", city: "", state: "", zip: ""},
@@ -146,7 +146,7 @@ class App extends Component {
       isLoggedIn: false
     },
     interval: null,
-    electrician: {}
+    electrician: {},
     }
     this.socket = io.connect('http://localhost:5000');
   }
@@ -240,13 +240,20 @@ class App extends Component {
         await this.setState({electrician:response.data}, async()=>{
           alert("Successfully logged in!");
           await this.emitLocation();
+          this.socket.on(this.state.electrician._id, (user)=>{
+            var parsed = JSON.parse(user);
+            alert("New User Requesting Service!")
+            if(!this.hasDup(parsed.user.id)){
+              this.state.users.push(parsed.user);
+            }
+            console.log(this.state.users);
+          })
           this.setState({isLoggedIn: true}, async ()=>{
             this.state.interval = setInterval(async()=>{
               this.emitLocation();
             },5000)
           });
         })
-
       })
       .catch((err) => {
         alert("Invalid login");
@@ -262,11 +269,18 @@ class App extends Component {
   emitLocation = async () => {
     await elecServices.emitLocation(this.socket,this.state.myPosition,this);
   }
+  hasDup(id) {
+    console.log("Inside CheckDups");
+    for(let i=0; i<this.state.users.length; i++) {
+      if(this.state.users[i].user.id == id){
+        return true;
+      }
+    }
+    return false;
+  }
   componentDidMount() {
-    //elecServices.emitLocation(this.socket,this.state.myPosition,this);
   }
   render() {
-  //elecServices.getUserLocation(this);
   var component = null;
   if(this.state.isLoading) {
     component = 
@@ -305,7 +319,7 @@ class App extends Component {
   </Hero>
   </div>
   } else if(this.state.isLoggedIn && !this.state.isLoading) {
-    component =  <ElecMap mypos={this.state.myPosition} me={this.state.electrician}/>
+    component =  <ElecMap mypos={this.state.myPosition} me={this.state.electrician} users={this.state.users}/>
   }
   return (
     <div className="App">

@@ -6,7 +6,7 @@ import {
 import ElecModal from './stateless/electricians_modal';
 import * as UserService from './services/UserServices';
 import Spinner from 'react-bootstrap/Spinner'
-
+import * as OrderService from './services/orderElectrician';
 const ctastyle = {
   margin:  '30px',
   backgroundColor: "orange"
@@ -35,6 +35,7 @@ class App extends Component {
       elecs: null
     };
   }
+
   async componentDidMount() {
     this.setState({loading:true})
     await UserService.getUserLocation().then(async(position)=>{
@@ -48,6 +49,14 @@ class App extends Component {
    closeModal = () => {
     this.setState({searchBox: false, landingPage: true})
   }
+
+  handleOrder = async (id) => {
+    //console.log('User: ');
+    //console.log('User: ', this.state.user);
+    await OrderService.orderElectrician(id, this.state.user);
+    alert(id);
+  }
+
   handleClick = () => {
     this.setState({loading:true}, async ()=> {
       await UserService.getElectriciansNearby(this.state.user).then((data)=>{
@@ -88,7 +97,7 @@ class App extends Component {
           <ScrollDownIndicator/>
       </Hero>
     </Provider> 
-    <ElecModal show = {this.state.searchBox} closeModal = {this.closeModal} elecs = {this.state.elecs}/>
+    <ElecModal handleOrder = {this.handleOrder} show = {this.state.searchBox} closeModal = {this.closeModal} elecs = {this.state.elecs}/>
     </div>
     }
   return (

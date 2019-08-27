@@ -3,6 +3,11 @@ var Electrician = require('../models/electrician');
 var io = require('socket.io-client');
 var GeoPoint = require('geopoint');
 var address = require('./AddressController');
+
+const redis = require('redis'), client = redis.createClient();
+
+client.on('connect', ()=>console.log('Redis Connected!'));
+
 var electricianController = {};
 
 var locationHistory = []
@@ -15,12 +20,29 @@ socket.on('connect', function onConnect(){
 
  socket.on('otherElecPositions', positionsData => {
    console.log("Electricians Detected!");
-   locationHistory.push(positionsData);
+   duplicatesRemover(locationHistory, positionsData);
+   console.log(locationHistory);
+
 });
 
-
+function duplicatesRemover(arr, positionsData) {
+  console.log("Inside DuplciatesRemover")
+  var count = 0;
+  for(var i=0; i <arr.length; i++) {
+    var a = JSON.parse(arr[i]);
+    var b = JSON.parse(positionsData);
+    if(a.electrician._id==b.electrician._id) {
+      count++;
+      if(a.coords.latitude !== b.coords.latitude && a.coords.longitude !== b.coords.longitude){
+        arr[i] = positionsData;
+      }
+    }
+  }
+  if(count==0) {
+    arr.push(positionsData);
+  }
+}
 //list all the electricians
-
 electricianController.list = function(req, res) {
     Electrician.find({}).exec((err, electrician) => {
         if(err) {
@@ -31,9 +53,7 @@ electricianController.list = function(req, res) {
         }
     })
 }
-
 //list an electrician where id = req.params.id
-
 electricianController.show = function(req, res) {
     Electrician.findOne({_id: req.params.id}).exec(function (err, electrician) {
       if (err) {
@@ -44,8 +64,6 @@ electricianController.show = function(req, res) {
       }
     });
   };
-
-
   //create and save an electrician
   electricianController.save = async function(req, res) {
     var adId = await address.save(req, res);
@@ -106,16 +124,17 @@ electricianController.show = function(req, res) {
       }
       if(distance < 10) {
       var obj = {
-        name: "Saif Khan",
-        location:"Vancouver",
+        id : loc.electrician._id,
+        name: loc.electrician.name,
+        location: "Saharanpur",
         distance: distance,
         description:"5 star rated electrician"
       }
       response.push(obj);
     }
     }
-    console.log(response);
-    console.log(locationHistory)
+   // console.log(response);
+    //console.log(locationHistory)
     res.json(response);
   }
 
@@ -128,7 +147,6 @@ electricianController.show = function(req, res) {
       else {
         console.log(elec);
         if(elec) {
-        console.log("success")
         res.json(elec, 200);
         }
         else {

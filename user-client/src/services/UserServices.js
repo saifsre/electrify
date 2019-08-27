@@ -2,7 +2,9 @@ import axios from 'axios';
 var uuid = require('uuid');
 
 export var getUserLocation = function() {
+  console.log("User position!")
     return new Promise((resolve, reject)=> {
+      // console.log("Inside promise");
         navigator.geolocation.getCurrentPosition(
             position=>{
               const payload = {
@@ -35,6 +37,7 @@ export var getElectriciansNearby = function(user) {
                   },
                   data: user
                 }).then((response)=> {
+                  console.log(response);
                         resolve(response);
                 })
                 .catch((err) => {

@@ -27,10 +27,12 @@ const modalStyle = {
     const modalTitleStyle = {
         color: "white"
     }
-const GenerateRows = ({items}) => {
+const GenerateRows = (props) => {
+    console.log(props)
    { 
        return(
-        items.map((e,i)=> {
+        props.items.map((e,i)=> {
+            console.log(e);
             return <ListGroup.Item key={i}>
                 <Card>
                 <Card.Body>
@@ -40,8 +42,7 @@ const GenerateRows = ({items}) => {
                 <Card.Text>
                  {e.description}
                 </Card.Text>
-                <Card.Link href="#">Order</Card.Link>
-                <Card.Link href="#">More Info</Card.Link>
+                <Button onClick = {()=>{props.handleOrder(e.id)}}> Order </Button>
                 </Card.Body>
                 </Card>
                 </ListGroup.Item>
@@ -49,12 +50,12 @@ const GenerateRows = ({items}) => {
     )
 }
 }
-const ElectList = ({items}) => {
+const ElectList = ( props) => {
 
     {
     return (
         <ListGroup>
-            <GenerateRows items = {items} />
+            <GenerateRows items = {props.items} handleOrder = {props.handleOrder}/>
         </ListGroup>
     )
 }
@@ -67,7 +68,7 @@ function ElecModal (props) {
     <Modal.Header style = {modalStyle}>
       <Modal.Title style = {modalTitleStyle}>Electricians Nearby</Modal.Title>
     </Modal.Header>
-    <Modal.Body> <ElectList items = {props.elecs}/> </Modal.Body>
+    <Modal.Body> <ElectList items = {props.elecs} handleOrder = {props.handleOrder} /> </Modal.Body>
     <Modal.Footer>
       <Button style = {buttonStyle} onClick = {props.closeModal}>
         Close

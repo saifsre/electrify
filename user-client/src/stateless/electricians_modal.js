@@ -28,11 +28,9 @@ const modalStyle = {
         color: "white"
     }
 const GenerateRows = (props) => {
-    console.log(props)
    { 
        return(
         props.items.map((e,i)=> {
-            console.log(e);
             return <ListGroup.Item key={i}>
                 <Card>
                 <Card.Body>

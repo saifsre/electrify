@@ -28,6 +28,7 @@ class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      isMap: false,
       landingPage : true,
       searchBox : false,
       loading: false,
@@ -53,16 +54,21 @@ class App extends Component {
   handleOrder = async (id) => {
     //console.log('User: ');
     //console.log('User: ', this.state.user);
-    await OrderService.orderElectrician(id, this.state.user);
-    alert(id);
+    await OrderService.orderElectrician(id, this.state.user).then((res)=>{
+      console.log("Success!");
+      alert("The requested electrician has been ordered!")
+    }).catch((err)=>{
+      console.log(err);
+    });
+
+    this.state.isMap = !this.state.isMap;
   }
 
   handleClick = () => {
     this.setState({loading:true}, async ()=> {
       await UserService.getElectriciansNearby(this.state.user).then((data)=>{
        this.setState({elecs: data.data}, ()=>{
-         this.setState({searchBox: true}, ()=> {
-           console.log(this.state);
+         this.setState({searchBox: true, isMap: false}, ()=> {
          })
        })
       })
@@ -97,7 +103,7 @@ class App extends Component {
           <ScrollDownIndicator/>
       </Hero>
     </Provider> 
-    <ElecModal handleOrder = {this.handleOrder} show = {this.state.searchBox} closeModal = {this.closeModal} elecs = {this.state.elecs}/>
+    <ElecModal isMap = {this.state.isMap} handleOrder = {this.handleOrder} show = {this.state.searchBox} closeModal = {this.closeModal} elecs = {this.state.elecs}/>
     </div>
     }
   return (

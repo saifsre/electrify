@@ -270,12 +270,17 @@ class App extends Component {
     await elecServices.emitLocation(this.socket,this.state.myPosition,this);
   }
   hasDup(id) {
+    try{
     console.log("Inside CheckDups");
     for(let i=0; i<this.state.users.length; i++) {
       if(this.state.users[i].user.id == id){
         return true;
       }
     }
+  }
+  catch(err) {
+    console.log("Error!")
+  }
     return false;
   }
   componentDidMount() {

@@ -14,7 +14,6 @@ export var orderElectrician = function(id, user) {
             },
             data: order
           }).then((response)=> {
-            console.log(response);
                   resolve(response);
           })
           .catch((err) => {

@@ -37,7 +37,6 @@ export var getElectriciansNearby = function(user) {
                   },
                   data: user
                 }).then((response)=> {
-                  console.log(response);
                         resolve(response);
                 })
                 .catch((err) => {

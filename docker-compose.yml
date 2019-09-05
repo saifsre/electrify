@@ -24,6 +24,15 @@ services:
       - 2000:2000
     depends_on:
       - electrician
+  
+  chat: 
+   build: ./services/chat
+   volumes:
+    - ./services/chat:/app
+   ports:
+    - 2001:3000
+   depends_on:
+    - order
 
   userclient: 
     build: ./user-client

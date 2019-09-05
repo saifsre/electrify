@@ -6,8 +6,9 @@ var logger = require('morgan');
 var mongoose = require('mongoose');
 var bodyParser = require('body-parser');
 var cors = require('cors') 
-
-mongoose.connect('mongodb://mongo/electrician', { useNewUrlParser: true })
+var config = require('./env.json')[process.env.NODE_ENV || 'development']
+console.log(config);
+mongoose.connect(config.db, { useNewUrlParser: true })
 .then(() => {console.log('Mongo db is connected!')})
 .catch((err)=> {console.log(err)});
 

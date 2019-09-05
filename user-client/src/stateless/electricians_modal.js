@@ -2,7 +2,8 @@ import Modal from 'react-bootstrap/Modal'
 import Button from 'react-bootstrap/Button'
 import ListGroup from 'react-bootstrap/ListGroup'
 import React, {Component} from 'react';
-import Card from 'react-bootstrap/Card'
+import Card from 'react-bootstrap/Card';
+import Chat from '../chat.js';
 const elecs = [
     {    name: 'Saif Khan',
          location: 'Vancouver',
@@ -60,9 +61,23 @@ const ElectList = ( props) => {
 }
 
 function ElecModal (props) {
-  return (
-    <div>
-    <Modal show = {props.show} animation= {true}>
+    console.log(props);
+    var toRender = null;
+    if(props.isChat) {
+        toRender = <Modal show = {props.isChat} animation= {true}>
+        <Modal.Header style = {modalStyle}>
+          <Modal.Title style = {modalTitleStyle}>Chatbox</Modal.Title>
+        </Modal.Header>
+        <Modal.Body> <Chat elec = {props.selectedElec} user = {props.user} /></Modal.Body>
+        <Modal.Footer>
+          <Button style = {buttonStyle} onClick = {props.closeModal}>
+            Close
+          </Button>
+        </Modal.Footer>
+      </Modal>
+    }
+    else {
+    toRender = <Modal show = {props.show && props.elecs.length !=0} animation= {true}>
     <Modal.Header style = {modalStyle}>
       <Modal.Title style = {modalTitleStyle}>Electricians Nearby</Modal.Title>
     </Modal.Header>
@@ -73,6 +88,10 @@ function ElecModal (props) {
       </Button>
     </Modal.Footer>
   </Modal>
+    }
+  return (
+    <div>
+        {toRender}
     </div>
   )
 }

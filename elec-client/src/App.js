@@ -7,6 +7,7 @@ import { Provider, Heading, Flex } from 'rebass';
 import {
   Feature,Hero, CallToAction, ScrollDownIndicator, Subhead
 } from 'react-landing-page';
+
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import InputGroup from 'react-bootstrap/InputGroup';
@@ -148,7 +149,8 @@ class App extends Component {
     interval: null,
     electrician: {},
     }
-    this.socket = io.connect('http://localhost:5000');
+    this.socket = io('http://localhost:5000', {transports: ['websocket', 'polling', 'flashsocket']})
+    
   }
 
   handleSubmit = () => {
@@ -238,6 +240,7 @@ class App extends Component {
         data: creds
       }).then(async(response)=> {
         await this.setState({electrician:response.data}, async()=>{
+          sessionStorage.setItem("electrician", JSON.stringify(response.data));
           alert("Successfully logged in!");
           await this.emitLocation();
           this.socket.on(this.state.electrician._id, (user)=>{
@@ -283,8 +286,28 @@ class App extends Component {
   }
     return false;
   }
-  componentDidMount() {
+  async componentDidMount() {
+    var elec = JSON.parse(sessionStorage.getItem("electrician"));
+    if(elec) {
+      await this.setState({electrician:elec}, async()=>{
+        alert("Welcome back " + this.state.electrician.name + "!");
+        await this.emitLocation();
+        this.socket.on(this.state.electrician._id, (user)=>{
+          var parsed = JSON.parse(user);
+          alert("New User Requesting Service!")
+          if(!this.hasDup(parsed.user.id)){
+            this.state.users.push(parsed.user);
+          }
+          console.log(this.state.users);
+        })
+        this.setState({isLoggedIn: true}, async ()=>{
+          this.state.interval = setInterval(async()=>{
+            this.emitLocation();
+          },5000)
+        });
+    })
   }
+}
   render() {
   var component = null;
   if(this.state.isLoading) {

@@ -3,6 +3,7 @@ var Electrician = require('../models/electrician');
 var io = require('socket.io-client');
 var GeoPoint = require('geopoint');
 var address = require('./AddressController');
+var config = require('../env.json')[process.env.NODE_ENV || 'development']
 
 //const redis = require('redis'), client = redis.createClient();
 
@@ -12,7 +13,7 @@ var electricianController = {};
 
 var locationHistory = []
 
-var socket =  io.connect('http://location:5000', {reconnect: true});
+var socket =  io.connect(config.loc_api, {reconnect: true});
 //console.log('check 1', socket.connected);
 socket.on('connect', function onConnect(){
   console.log('This Electrician Service is now connected to the location server.');
@@ -126,9 +127,9 @@ electricianController.show = function(req, res) {
       var obj = {
         id : loc.electrician._id,
         name: loc.electrician.name,
-        location: "Saharanpur",
+        location: "",
         distance: distance,
-        description:"5 star rated electrician"
+        description: "5 star rated electrician"
       }
       response.push(obj);
     }

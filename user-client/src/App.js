@@ -33,7 +33,9 @@ class App extends Component {
       searchBox : false,
       loading: false,
       user: null,
-      elecs: null
+      elecs: [],
+      chatBox: false,
+      selectedElec: null
     };
   }
 
@@ -52,11 +54,10 @@ class App extends Component {
   }
 
   handleOrder = async (id) => {
-    //console.log('User: ');
-    //console.log('User: ', this.state.user);
     await OrderService.orderElectrician(id, this.state.user).then((res)=>{
       console.log("Success!");
       alert("The requested electrician has been ordered!")
+      this.setState({chatBox: true, selectedElec: id});
     }).catch((err)=>{
       console.log(err);
     });
@@ -64,12 +65,20 @@ class App extends Component {
     this.state.isMap = !this.state.isMap;
   }
 
+  handleChatBox = () => {
+    console.log("Chatbox on!");
+  }
+
   handleClick = () => {
     this.setState({loading:true}, async ()=> {
       await UserService.getElectriciansNearby(this.state.user).then((data)=>{
        this.setState({elecs: data.data}, ()=>{
-         this.setState({searchBox: true, isMap: false}, ()=> {
+         if(this.state.elecs.length == 0){
+           alert("No electrician nearby!")
+         }
+         else {this.setState({searchBox: true, isMap: false, chatBox: false}, ()=> {
          })
+        }
        })
       })
       .catch((err)=>{
@@ -78,7 +87,7 @@ class App extends Component {
         this.setState({loading:false})
       });
     })
-  }
+}
   render() {
     var component = null;
     if(this.state.loading) {
@@ -103,7 +112,7 @@ class App extends Component {
           <ScrollDownIndicator/>
       </Hero>
     </Provider> 
-    <ElecModal isMap = {this.state.isMap} handleOrder = {this.handleOrder} show = {this.state.searchBox} closeModal = {this.closeModal} elecs = {this.state.elecs}/>
+    <ElecModal user = {this.state.user} selectedElec = {this.state.selectedElec} handleOrder = {this.handleOrder} show = {this.state.searchBox} isChat = {this.state.chatBox} closeModal = {this.closeModal} elecs = {this.state.elecs}/>
     </div>
     }
   return (

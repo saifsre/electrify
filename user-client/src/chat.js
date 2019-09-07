@@ -26,10 +26,6 @@ class Chat extends React.Component{
         this.socket = io('localhost:2001',{transports: ['websocket', 'polling', 'flashsocket']});
         console.log(this.socket);
 
-        // this.socket.on(this.state.elec, function(data){
-        //     addMessage(data);
-        // });
-
         this.socket.on(this.state.user.id, (data)=> {
             addMessage(data);
         })

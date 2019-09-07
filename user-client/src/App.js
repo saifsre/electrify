@@ -50,7 +50,7 @@ class App extends Component {
      ;}
 
    closeModal = () => {
-    this.setState({searchBox: false, landingPage: true})
+    this.setState({searchBox: false, landingPage: true, chatBox: false})
   }
 
   handleOrder = async (id) => {

@@ -24,7 +24,6 @@ services:
       - 2000:2000
     depends_on:
       - electrician
-  
   chat: 
    build: ./services/chat
    volumes:
@@ -33,7 +32,6 @@ services:
     - 2001:3000
    depends_on:
     - order
-
   userclient: 
     build: ./user-client
     volumes:
@@ -42,7 +40,6 @@ services:
       - 3000:3000
     depends_on:
       - electrician
-
   electricianclient: 
     build: ./elec-client
     volumes:
@@ -51,12 +48,10 @@ services:
       - 3001:3000
     depends_on:
       - electrician
-
   mongo:
     image: mongo
     ports:
       - 27017:27017
-
   redis:
     image: redis:latest
     

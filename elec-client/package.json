@@ -12,7 +12,7 @@
     "react-landing-page": "^2.0.2",
     "react-leaflet": "^2.4.0",
     "react-navigation": "^3.11.1",
-    "react-scripts": "3.1.1",
+    "react-scripts": "3.4.4",
     "rebass": "^3.0.0-12",
     "socket.io-client": "^2.2.0",
     "styled-components": "^4.3.2"
